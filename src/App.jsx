@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import MapView from './components/MapView'
+import Step3 from './components/Step3'
 import { detectWard } from './data/wardData'
 import 'leaflet/dist/leaflet.css'
 
@@ -30,6 +31,12 @@ export default function App() {
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     )
+
+    window.addEventListener('restartApp', () => {
+      setStep(1)
+      setResult(null)
+      setPreview(null)
+    })
   }, [])
 
   const handlePhoto = async (e) => {
@@ -117,16 +124,13 @@ export default function App() {
           <MapView location={location} result={result} />
 
           <button style={styles.button} onClick={() => setStep(3)}>
-            📧 Complaint Bhejo →
+            📱 Story Banao →
           </button>
         </div>
       )}
 
-      {step === 3 && (
-        <div style={styles.resultBox}>
-          <h3>✅ Coming Next!</h3>
-          <p>Email + Roast Generator</p>
-        </div>
+      {step === 3 && result && location && (
+        <Step3 result={result} location={location} preview={preview} />
       )}
     </div>
   )
