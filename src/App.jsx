@@ -21,24 +21,29 @@ export default function App() {
 
     // GPS Location
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setLocation({
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude
-        })
-      },
-      () => {
-        // Mumbai default if GPS fails
-        setLocation({ lat: 19.0760, lng: 72.8777 })
-      }
-    )
+  (pos) => {
+    setLocation({
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude
+    })
+  },
+  (err) => {
+    console.log("GPS Error:", err.message)
+    setLocation({ lat: 19.0760, lng: 72.8777 })
+  },
+  {
+    enableHighAccuracy: true,  // Ye add karo
+    timeout: 10000,
+    maximumAge: 0
+  }
+)
 
     // Gemini AI
     const reader = new FileReader()
     reader.readAsDataURL(file)
     reader.onload = async () => {
       const base64 = reader.result.split(',')[1]
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
       const res = await model.generateContent([
         { inlineData: { mimeType: 'image/jpeg', data: base64 } },
