@@ -106,6 +106,7 @@ export default function App() {
               }}> {result.severity}</span>
             </p>
             <p><b>Description:</b> {result.description}</p>
+            <p><b>📍 Location:</b> {location.area}, Mumbai</p>
             <p><b>Area:</b> {result.area}</p>
             <p style={{ fontSize: 12, color: '#888' }}>
               📍 {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
@@ -141,6 +142,6 @@ const styles = {
   input: { marginTop: 10 },
   preview: { width: '100%', borderRadius: 8, marginTop: 10 },
   loading: { color: '#FF6B00', fontWeight: 'bold' },
-  resultBox: <p style={{fontSize: 10}}>{JSON.stringify(location)}</p>,
+  resultBox: { background: '#f9f9f9', borderRadius: 12, padding: 16, marginBottom: 16 },
   button: { width: '100%', padding: 14, background: '#FF6B00', color: 'white', border: 'none', borderRadius: 10, fontSize: 16, cursor: 'pointer' }
 }
