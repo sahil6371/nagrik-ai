@@ -38,7 +38,7 @@ export default function App() {
     reader.readAsDataURL(file)
     reader.onload = async () => {
       const base64 = reader.result.split(',')[1]
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' })
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
 
       const res = await model.generateContent([
         { inlineData: { mimeType: 'image/jpeg', data: base64 } },
