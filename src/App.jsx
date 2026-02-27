@@ -141,6 +141,6 @@ const styles = {
   input: { marginTop: 10 },
   preview: { width: '100%', borderRadius: 8, marginTop: 10 },
   loading: { color: '#FF6B00', fontWeight: 'bold' },
-  resultBox: { background: '#f9f9f9', borderRadius: 12, padding: 16, marginBottom: 16 },
+  resultBox: <p style={{fontSize: 10}}>{JSON.stringify(location)}</p>,
   button: { width: '100%', padding: 14, background: '#FF6B00', color: 'white', border: 'none', borderRadius: 10, fontSize: 16, cursor: 'pointer' }
 }
