@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import MapView from './components/MapView'
 import 'leaflet/dist/leaflet.css'
@@ -12,31 +12,33 @@ export default function App() {
   const [preview, setPreview] = useState(null)
   const [step, setStep] = useState(1)
 
+  // App khulte hi GPS start ho jaye
+  useEffect(() => {
+    navigator.geolocation.watchPosition(
+      (pos) => {
+        setLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude
+        })
+      },
+      (err) => {
+        console.log("GPS Error:", err.message)
+        setLocation({ lat: 19.0760, lng: 72.8777 })
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      }
+    )
+  }, [])
+
   const handlePhoto = async (e) => {
     const file = e.target.files[0]
     if (!file) return
 
     setPreview(URL.createObjectURL(file))
     setLoading(true)
-
-    // GPS Location
-    navigator.geolocation.getCurrentPosition(
-  (pos) => {
-    setLocation({
-      lat: pos.coords.latitude,
-      lng: pos.coords.longitude
-    })
-  },
-  (err) => {
-    console.log("GPS Error:", err.message)
-    setLocation({ lat: 19.0760, lng: 72.8777 })
-  },
-  {
-    enableHighAccuracy: true,  // Ye add karo
-    timeout: 10000,
-    maximumAge: 0
-  }
-)
 
     // Gemini AI
     const reader = new FileReader()
@@ -70,6 +72,13 @@ export default function App() {
       <h1 style={styles.title}>🇮🇳 NagrikAI</h1>
       <p style={styles.subtitle}>Mumbai ki awaaz, AI ki taakat</p>
 
+      {/* GPS Status */}
+      {step === 1 && (
+        <p style={{ textAlign: 'center', fontSize: 12, color: location ? 'green' : 'orange' }}>
+          {location ? '📍 Location Ready!' : '⏳ Location le raha hai...'}
+        </p>
+      )}
+
       {step === 1 && (
         <div style={styles.uploadBox}>
           <p>📸 Issue ki photo lo</p>
@@ -87,24 +96,25 @@ export default function App() {
 
       {step === 2 && result && location && (
         <div>
-          {/* AI Result */}
           <div style={styles.resultBox}>
             <h3>🤖 AI Detection</h3>
             <p><b>Issue:</b> {result.issueType}</p>
-            <p><b>Severity:</b> 
+            <p><b>Severity:</b>
               <span style={{
-                color: result.severity === 'High' ? 'red' : 
+                color: result.severity === 'High' ? 'red' :
                        result.severity === 'Medium' ? 'orange' : 'green'
               }}> {result.severity}</span>
             </p>
             <p><b>Description:</b> {result.description}</p>
             <p><b>Area:</b> {result.area}</p>
+            <p style={{ fontSize: 12, color: '#888' }}>
+              📍 {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
+            </p>
           </div>
 
-          {/* Map */}
           <MapView location={location} result={result} />
 
-          <button 
+          <button
             style={styles.button}
             onClick={() => setStep(3)}
           >
